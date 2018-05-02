@@ -1,0 +1,14 @@
+{
+    "require": {
+        "fzaninotto/faker": "^1.7",
+        "twig/twig": "^2.4",
+        "twbs/bootstrap": "4.1.0",
+        "components/jquery": "^3.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "StudentList\\Controllers\\": "app/controllers/",
+            "StudentList\\Models\\": "app/models/"
+        }
+    }
+}

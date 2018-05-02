@@ -1,0 +1,53 @@
+{% extends 'templates/baseTemplate.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="container">
+    {% if notify %}
+        <div>
+            <h1>{{ notify }}</h1>
+        </div>
+    {% endif%}
+    <div>
+        {% if userName %}
+            <p id="regiId">Вы зарегистрированы как {{ userName }}</p>
+        {% else %}
+            <p id ="regiId">Вы не зарегистрированы</p>
+        {% endif%}
+    </div>
+        <form action="register" method="post"  >
+            <input type="text" name="emailAuthorization" id="emailAuthorization">
+            <input type="submit" value="authorization" name="authorization">
+            <p id="errorText"></p>
+        </form>
+</div>
+<script type="text/javascript">
+    $("document").ready(function(){
+        $("form").submit(function (e){
+            $.ajax({
+                url: 'register',
+                type: 'POST',
+                data: {"emailAuthorization": $('#emailAuthorization').val()},
+                dataType: 'json',
+                success: function(data){
+                    process(data);
+                },
+                error: function () {
+                    alert('error');
+                }
+
+            });
+            e.preventDefault();
+        })
+    })
+    function process(data){
+        if(data.error){
+            $('#errorText').text(data.text)
+        }else{
+            var url = "/edit";
+            $(location).attr('href',url);
+        }
+    }
+</script>
+</body>
+</html>
+{% endblock %}

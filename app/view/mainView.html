@@ -1,0 +1,63 @@
+{% extends 'templates/baseTemplate.html' %}
+
+{% block title %}Главная{% endblock %}
+{% block content %}
+<div class="container" xmlns="http://www.w3.org/1999/html">
+	<div class="row">
+		<form action="main" method="get">
+			<input type="search" class="col-8 form-control" id="inp" name="search">
+			<input class =" col btn btn-danger" type="submit" value="submit" id="sub">
+		</form>
+		{% if search %}
+		<div>
+			<p>Вы ищите как "<span id="search">{{search}}</span>"</p>
+			<a href="/">[Вернуться на главную]</a>
+		</div>
+		{% endif %}
+	</div>
+
+	<table class="table table-sm ">
+		<thead class='thead-dark'>
+			<tr>
+				<th><a href="{{ getLink(pageNum,'name')}}">name</a></th>
+				<th><a href="{{ getLink(pageNum,'surname')}}">surname</a></th>
+				<th><a href="{{ getLink(pageNum,'groupNum')}}">group</a></th>
+				<th><a href="{{ getLink(pageNum,'points')}}">points</a></th>
+			</tr>
+		</thead>
+        <tbody>
+		{% for row in values %}
+			<tr>
+				<td>{{ row.name|raw }}</td>
+				<td>{{ row.surname|raw }}</td>
+				<td>{{ row.groupNum|raw }}</td>
+				<td>{{ row.points|raw }}</td>
+			</tr>
+		{% endfor %}
+	    </tbody>
+   </table>
+	<nav aria-label="Page navigation example">
+		<ul class="pagination">
+		{% if pageNum >= colButton and countPage != colButton %}
+			<a href="{{ getLink(1) }}"  class="page-link" > First </a>
+		{% endif %}
+		{% if pageNum != 1 %}
+			<a href="{{ getLink(pageNum-1) }}"  class="page-link"> Previous </a>
+			{% endif %}
+		{% for page in arr %}
+			{% if page == pageNum %}
+				<a href="#"  class="page-link" id="currentPage" style="color: red;">{{ page }}</a>
+			{% else %}
+				<a href="{{ getLink(page) }}"  class="page-link">{{ page }}</a>
+			{% endif %}
+		{% endfor %}
+		{% if pageNum != countPage and countPage != 0 %}
+			<a href=" {{ getLink(pageNum+1) }}"  class="page-link"> Next </a>
+			{% endif %}
+		{% if pageNum <= countPage - colButton %}
+			<a href=" {{ getLink(countPage) }}" class="page-link"> Last </a>
+		{% endif %}
+		</ul>
+	</nav>
+</div>
+{% endblock %}
