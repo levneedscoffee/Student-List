@@ -1,5 +1,5 @@
 <?php
-namespace StudentList\Models;
+namespace StudentList\Validation;
 
 class Validator
 {

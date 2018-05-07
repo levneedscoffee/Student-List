@@ -4,7 +4,12 @@
 <div class="container">
     {% if changeSuccess %}
     <div>
-        <h1>Вы изменили данные</h1>
+        <h1>Вы внесли данные</h1>
+    </div>
+    {% endif%}
+    {% if errorXSRF %}
+    <div>
+        <h1>Что то пошло не так</h1>
     </div>
     {% endif%}
 <form action="edit" method="post">
@@ -29,60 +34,77 @@
             <small style="color: red;">{{ errors.email }}</small>
         {% endif %}
     </div>
-    <div class="form-group">
-        <label>Group id</label>
-        <select name="groupNum">
-            <option value="15J">15J</option>
-            <option value="IU5">IU5</option>
-            <option value="LS7">LS7</option>
-        </select>
-        {% if errors.groupNum %}
-            <small style="color: red;">{{ errors.groupNum }}</small>
-        {% endif %}
-    </div>
-
-    <div class="from-row">
+    <div class="from-group ">
         <label>points</label>
         <input class="form-control" type="text" name="points" value={{db.points}}>
         {% if errors.points %}
-            <small style="color: red;">{{ errors.points }}</small>
+        <small style="color: red;">{{ errors.points }}</small>
         {% endif %}
     </div>
-    <div class="from-row">
-        <label>Birthday</label>
-        <input class="form-control" type="date" name="birthday" value={{db.birthday}}>
-        {% if errors.birthday %}
-            <small style="color: red;">{{ errors.birthday }}</small>
-        {% endif %}
+    <div class="form-row">
+        <div class="from-group col">
+            <label>Birthday</label>
+            <input class="form-control" type="date" name="birthday" value={{db.birthday}}>
+            {% if errors.birthday %}
+                <small style="color: red;">{{ errors.birthday }}</small>
+            {% endif %}
+        </div>
+        <div class="form-group col">
+            <label>Group id</label>
+            <select id="inputState" class="form-control" name="groupNum">
+                <option value="15J">15J</option>
+                <option value="IU5">IU5</option>
+                <option value="LS7">LS7</option>
+            </select>
+            {% if errors.groupNum %}
+                <small style="color: red;">{{ errors.groupNum }}</small>
+            {% endif %}
+        </div>
     </div>
-    <div class="form-group">
+    <div class="form-row">
+    <div class="form-group col">
         <label>Birthplace</label>
-        <input class="form-check-input" type="radio" name="birthplace" value="unlocal" {% if db.birthplace == "unlocal" %}checked{% endif %}>
-        <label class="form-check-label">
-           unlocal
-        </label>
-        <input class="form-check-input" type="radio" name="birthplace" value="local" {% if db.birthplace == "local" %}checked{% endif %}>
-        <label class="form-check-label" >
-            local
-        </label>
+        <ul>
+            <li>
+                <input class="form-check-input" type="radio" name="birthplace" value="unlocal" {% if db.birthplace == "unlocal" %}checked{% endif %}>
+                <label class="form-check-label">
+                    unlocal
+                </label>
+            </li>
+            <li>
+                <input class="form-check-input" type="radio" name="birthplace" value="local" {% if db.birthplace == "local" %}checked{% endif %}>
+                <label class="form-check-label" >
+                    local
+                </label>
+            </li>
+        </ul>
         {% if errors.birthplace %}
             <small style="color: red;">{{ errors.birthplace }}</small>
         {% endif %}
     </div>
-    <div class="form-check">
-        <input class="form-check-input" type="radio" name="gender" value="male" {% if db.gender == "male" %}checked{% endif %}>
-        <label class="form-check-label">
-            Male
-        </label>
-        <input class="form-check-input" type="radio" name="gender" value="female" {% if db.gender == "female" %}checked{% endif %}>
-        <label class="form-check-label" >
-            Female
-        </label>
+    <div class="form-group col">
+        <label>Gender</label>
+        <ul>
+            <li>
+                <input class="form-check-input" type="radio" name="gender" value="male" {% if db.gender == "male" %}checked{% endif %}>
+                <label class="form-check-label">
+                    Male
+                </label>
+            </li>
+            <li>
+                <input class="form-check-input" type="radio" name="gender" value="female" {% if db.gender == "female" %}checked{% endif %}>
+                <label class="form-check-label" >
+                    Female
+                </label>
+            </li>
+        </ul>
         {% if errors.gender %}
             <small style="color: red;">{{ errors.gender }}</small>
         {% endif %}
     </div>
-    <input class ="btn btn-danger" type="submit" value="submit" name="submit">
+    </div>
+    <input type="hidden" name="token" value="{{ token }}">
+    <input class ="btn btn-danger " type="submit" value="submit" name="submit">
 </form>
 </div>
 {% endblock %}

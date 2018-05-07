@@ -1,5 +1,9 @@
 <?php
-namespace StudentList\Models;
+namespace StudentList\Validation;
+use StudentList\Entity\Student;
+use StudentList\Models\StudentDataGateway;
+use StudentList\Models\DatabaseMySql;
+use StudentList\Models\UserDataGateway;
 
 
 class StudentValidation extends Validator
@@ -16,20 +20,19 @@ class StudentValidation extends Validator
     private $values;
     private $errors;
 
-    public function validate($sendValues, $userEmail)
+    public function validate(Student $student, $userEmail)
     {
-
-        $this->values = $sendValues;
+        $this->values = $student->returnStudentValues();
 
         $this->errors = [];
-        $this->errors["name"] = $this->validateName($sendValues["name"],20);
-        $this->errors["surname"] = $this->validateName($sendValues["surname"],40);
-        $this->errors["groupNum"] = $this->validateGroupNum(($sendValues["groupNum"]));
-        $this->errors["email"] = $this->confirmEmail($sendValues["email"], $userEmail);
-        $this->errors["points"] = $this->validatepoints($sendValues["points"]);
-        $this->errors["birthday"] = $this->validateBirthday($sendValues["birthday"]);
-        $this->errors["birthplace"] = $this->validateBirthlace($sendValues["birthplace"]);
-        $this->errors["gender"] = $this->validatpointsnder($sendValues["gender"]);
+        $this->errors["name"] = $this->validateName($student->getName(),20);
+        $this->errors["surname"] = $this->validateName($student->getSurname(),40);
+        $this->errors["groupNum"] = $this->validateGroupNum(($student->getGroupNum()));
+        $this->errors["email"] = $this->confirmEmail($student->getEmail(), $userEmail);
+        $this->errors["points"] = $this->validatePoints($student->getPoints());
+        $this->errors["birthday"] = $this->validateBirthday($student->getBirthday());
+        $this->errors["birthplace"] = $this->validateBirthlace($student->getBirthplace());
+        $this->errors["gender"] = $this->validateGender($student->getGender());
     }
 
 
@@ -50,10 +53,10 @@ class StudentValidation extends Validator
     }
 
     public function confirmEmail($email, $userEmail){
-        $checkStudentsTable =  new StudentDataGateway();
+        $checkStudentsTable =  new StudentDataGateway(new DatabaseMySql());
         $answerStudents =  $checkStudentsTable->checkEmail($email);
 
-        $checkUserTable = new UserDataGateway();
+        $checkUserTable = new UserDataGateway(new DatabaseMySql());
         $answerUser = $checkUserTable->checkUserInDb($email);
 
         $validateEmail = $this->validateEmail($email);
@@ -103,7 +106,7 @@ class StudentValidation extends Validator
         return true;
 
     }
-    public function validatpointsnder($gender)
+    public function validateGender($gender)
     {
         if (!$gender) {
             return "Вы не указали пол";

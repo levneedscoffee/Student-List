@@ -5,11 +5,12 @@ namespace StudentList\Controllers;
 
 class Controller
 {
-    private $twig;
+    protected $twig;
+
 
     protected function twigRender($templates, $values=array())
     {
-        $loader = new \Twig_Loader_Filesystem('/var/www/project/app/view');
+        $loader = new \Twig_Loader_Filesystem(PATH.'app/view');
         $this->twig = new \Twig_Environment($loader);
 
         $this->addNewFunction();

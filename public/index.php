@@ -2,9 +2,15 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-require_once '/var/www/project/vendor/autoload.php';
+$string = file_get_contents('/var/www/project/config.json');
+$path = json_decode($string, true)['path'];
 
-require '/var/www/project/app/controllers/FrontController.php';
+define('PATH', $path);
+
+require_once (PATH.'vendor/autoload.php');
+
+require PATH.'app/controllers/FrontController.php';
+
 
 $obj = new StudentList\Controllers\FrontController();
 $obj->start();

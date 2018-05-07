@@ -1,5 +1,7 @@
 <?php
-namespace StudentList\Models;
+namespace StudentList\Services;
+use StudentList\Models\DatabaseMySql;
+use StudentList\Models\StudentDataGateway;
 
 class Paginator
 {
@@ -17,9 +19,10 @@ class Paginator
         $sort = ($sort != null) ? $sort : 'name';
         $this->search = ($search != null) ? $search : false;
 
-        $db = new StudentDataGateway();
+
+        $db = new StudentDataGateway(new DatabaseMySql());
         if($this->search){
-            $values = $db->returnSearchData($page, $this->limit, $search, $sort);
+            $values = $db->returnSearchLimitData($page, $this->limit, $search, $sort);
         }else{
             $values = $db->returnLimitData($page, $this->limit, $sort);
         }
@@ -28,7 +31,7 @@ class Paginator
     }
     public function returnCountPage()
     {
-        $db = new StudentDataGateway();
+        $db = new StudentDataGateway(new DatabaseMySql());
 
         if($this->search){
             return ceil($db->countSearchPage($this->search)/$this->limit);

@@ -1,0 +1,10 @@
+{
+  "db": {
+    "servername": "127.0.0.1",
+    "username":  "root",
+    "password": "",
+    "dbname": "studentList"
+  },
+  "path": "/path/to/project/folder/"
+}
+

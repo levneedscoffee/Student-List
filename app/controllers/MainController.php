@@ -1,6 +1,6 @@
 <?php
 namespace StudentList\Controllers;
-use StudentList\Models\Paginator;
+use StudentList\Services\Paginator;
 
 
 
@@ -11,6 +11,7 @@ class MainController extends Controller
 
     public function actionIndex()
     {
+
         $search = isset($_GET['search']) ? trim($_GET['search']) : null;
         $sort = isset($_GET['sort']) ? $_GET['sort'] : null;
 
@@ -47,7 +48,11 @@ class MainController extends Controller
 
     private function returnNumPage()
     {
-        return (isset($_GET["page"])) ? $_GET["page"] : 1;
+        if(isset($_GET['page']) && is_numeric($_GET['page'])){
+            return $_GET["page"];
+        }else{
+            return 1;
+        }
     }
 
     private function wrapSearchStr(&$val, $search)

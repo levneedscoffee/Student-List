@@ -1,9 +1,11 @@
 <?php
 namespace StudentList\Controllers;
+use StudentList\Models\DatabaseMySql;
+use StudentList\Services\Security;
+use StudentList\Entity\Student;
 use StudentList\Models\StudentDataGateway;
-use StudentList\Models\StudentValidation;
-use StudentList\Models\UserDataGateway;
-use StudentList\Models\User;
+use StudentList\Validation\StudentValidation;
+use StudentList\Entity\User;
 
 class EditController extends Controller
 {
@@ -12,7 +14,10 @@ class EditController extends Controller
 
     public function actionIndex()
     {
-        $pdoStudent = new StudentDataGateway();
+        $security = new Security();
+        $token = $security->createUniqueTokenXSRF();
+
+        $pdoStudent = new StudentDataGateway(new DatabaseMySql());
 
         $userEmail = isset($_COOKIE["userEmail"]) ? $_COOKIE["userEmail"] : false;
         $userValue = '';
@@ -29,25 +34,33 @@ class EditController extends Controller
 
 
         if ($_SERVER["REQUEST_METHOD"] === "POST"){
-            $sendValues = $this->getSendValues();
+            $studentObject = $this->getSendValues();
+
+            if (!$security->checkTokenXSRF()){
+                $this->twigRender(self::CONTROLLER_VIEW, array("errorXSRF"=>true));
+                exit;
+            }
+
+
             $val = new StudentValidation();
-            $val->validate($sendValues, $userEmail);
+            $val->validate($studentObject, $userEmail);
             $errors = $val->returnErrors();
             $values = $val->returnValues();
 
             if (count($errors) > 0) {
                  $this->twigRender(self::CONTROLLER_VIEW, array("errors" => $errors,
                     "userEmail" => $userEmail,
-                    "db" => $values));
+                    "db" => $values,
+                     'token' => $token));
                 exit;
             }else{
                 if($userInStudentsList){
-                    $pdoStudent->updateStudent($values, $userEmail);
+                    $pdoStudent->updateStudent($studentObject, $userEmail);
                 }else{
-                    $pdoStudent->insertNew($values);
+                    $pdoStudent->insertNew($studentObject);
                 }
 
-                if($userEmail !== $values["email"]){
+                if($userEmail !== $values['email']){
                     $this->setOptionsIfUserChangeEmail($userEmail);
                     header("Location:/register?notify=userChangeEmail");
                 }
@@ -57,30 +70,28 @@ class EditController extends Controller
             }
         }
 
-        $this->twigRender(self::CONTROLLER_VIEW, array("userEmail" => $userEmail, "db" => $userValue));
+        $this->twigRender(self::CONTROLLER_VIEW, array("userEmail" => $userEmail, "db" => $userValue,'token'=>$token));
 
     }
     private function setOptionsIfUserChangeEmail($userEmail)
     {
-        $deleteFromDb = new UserDataGateway();
-        $deleteFromDb->deleteUserFromDb($userEmail);
-
-        $deleteUserCookie = new User;
-        $deleteUserCookie->deleteCookie();
+        $user = new User;
+        $user->deleteUser($userEmail);
     }
+
 
     private function getSendValues()
     {
         $name = trim($_POST['name']);
         $surname = trim($_POST['surname']);
-        $groupNum = trim( $_POST['groupNum']);
+        $groupNum = isset($_POST["groupNum"]) ? $_POST['groupNum'] : false;
         $email = trim($_POST['email']);
         $points = trim($_POST['points']);
         $birthday = trim($_POST['birthday']);
-        $birthplace = trim($_POST['birthplace']);
+        $birthplace = (isset($_POST["birthplace"])) ? $_POST['birthplace'] : false;
         $gender =(isset($_POST["gender"])) ? $_POST['gender'] : false;
 
-        return array("name" => $name,
+        $sendValues =  array("name" => $name,
             "surname" => $surname,
             "groupNum" => $groupNum,
             "email" => $email,
@@ -88,5 +99,8 @@ class EditController extends Controller
             "birthday" => $birthday,
             "birthplace" => $birthplace,
             "gender" => $gender);
+
+        $student = new Student();
+        return $student->setStudentValues($sendValues);
     }
 }

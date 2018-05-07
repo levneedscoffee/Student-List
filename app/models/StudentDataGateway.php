@@ -1,5 +1,6 @@
 <?php
 namespace StudentList\Models;
+use StudentList\Entity\Student;
 
 
 
@@ -8,56 +9,61 @@ class StudentDataGateway
 {
     private $pdo;
 
-    public function __construct()
+    public function __construct(DataInterface $obj)
     {
-        $db = new DbMySql();
-        $this->pdo = $db->getDb();
+        $this->pdo = $obj->connection();
     }
 
     public function showAll()
     {
-        $res = $this->pdo->query('select * from students');
-        return $res->fetchAll();
+        $stmt = $this->pdo->query('select * from students');
+        return $stmt->fetchAll();
     }
+
     public function returnLimitData($page, $limit, $sort)
     {
-        $res = $this->pdo->query('SELECT * FROM students ORDER by '.$sort.' LIMIT '.$page.','.$limit);
-        return $res->fetchAll();
+//        $sort = $this->pdo->quote($sort);
+
+        $stmt = $this->pdo->query('SELECT * FROM students ORDER by '.$sort.' LIMIT '.$page.','.$limit);
+        return $stmt->fetchAll();
 
     }
 
-    public function returnSearchData($page, $limit, $search, $sort)
+    public function returnSearchLimitData($page, $limit, $search, $sort)
     {
-            $res = $this->pdo->query('select * from students
+
+//        $search = $this->pdo->quote($search);
+//        $sort = $this->pdo->quote($sort);
+
+            $stmt = $this->pdo->query('select * from students
               where name like "%'.$search.'%"
               or  surname like "%'.$search.'%"
               or  groupNum like "%'.$search.'%"
               or  points like "%'.$search.'%"
  ORDER by '.$sort.' LIMIT '.$page.','.$limit);
 
-            return $res->fetchAll();
+            return $stmt->fetchAll();
     }
-    public function countSearchPage($search){
-        $res = $this->pdo->query('select COUNT(*) from students
+
+    public function countSearchPage($search)
+    {
+//        $search = $this->pdo->quote($search);
+
+        $stmt = $this->pdo->query('select COUNT(*) from students
               where name like "%'.$search.'%"
               or  surname like "%'.$search.'%"
               or  groupNum like "%'.$search.'%"
               or  points like "%'.$search.'%"');
 
-        return $res->fetch()[0];
+        return $stmt->fetch()[0];
     }
+
     public function countPage()//где это используется?
     {
-        $res = $this->pdo->query('SELECT COUNT(*) FROM students');
-        return $res->fetch()[0];
+        $stmt = $this->pdo->query('SELECT COUNT(*) FROM students');
+        return $stmt->fetch()[0];
     }
-    public function insertNew($values)
-    {
 
-        $stmt = $this->pdo->prepare('insert into students(name, surname, groupNum, email, points, birthday, birthplace,gender) 
-        VALUES (:name, :surname, :groupNum, :email, :points, :birthday, :birthplace, :gender)');
-        $stmt->execute($values);
-    }
 
     public function checkEmail($email)
     {
@@ -71,29 +77,36 @@ class StudentDataGateway
         }
     }
 
-    public function updateStudent($values, $userEmail)
-    {
-        $values["userEmail"] = $userEmail;
-        $res = $this->pdo->prepare(
-            'UPDATE students SET name = :name, surname = :surname, groupNum = :groupNum, email = :email, points = :points,  birthday = :birthday, birthplace = :birthplace, gender = :gender
-                        WHERE  email = :userEmail');
-        $values["userEmail"] = $userEmail;
-        $res->execute($values);
-
-    }
-
-
     public function returnValuesByEmail($email)
     {
-        $res = $this->pdo->prepare('SELECT * FROM students WHERE email = :email');
-        $res->execute(array('email' => $email));
-        $val = $res->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt = $this->pdo->prepare('SELECT * FROM students WHERE email = :email');
+        $stmt->execute(array('email' => $email));
+        $val = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         if (count($val) > 0){
             return $val[0];
         }else{
             return false;
         }
+    }
 
+    public function insertNew(Student $student)
+    {
+
+        $stmt = $this->pdo->prepare('insert into students(name, surname, groupNum, email, points, birthday, birthplace,gender) 
+        VALUES (:name, :surname, :groupNum, :email, :points, :birthday, :birthplace, :gender)');
+
+        $stmt->execute($student->returnStudentValues());
+    }
+    public function updateStudent(Student $student, $userEmail)
+    {
+
+        $stmt = $this->pdo->prepare(
+            'UPDATE students SET name = :name, surname = :surname, groupNum = :groupNum, email = :email, points = :points,  birthday = :birthday, birthplace = :birthplace, gender = :gender
+                        WHERE  email = :userEmail');
+
+        $values = $student->returnStudentValues();
+        $values["userEmail"] = $userEmail;
+        $stmt->execute($values);
     }
 
 }

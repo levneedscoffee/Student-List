@@ -1,13 +1,14 @@
 <?php
 namespace StudentList\Models;
 
-class DbMySql
+class DatabaseMySql implements DataInterface
 {
-    protected $pdo;
+    private $pdo;
 
-    public function __construct()
+    public function connection()
     {
-        $option = parse_ini_file('/var/www/project/config.ini');
+        $string = file_get_contents('/var/www/project/config.json');
+        $option = json_decode($string, true)['db'];
 
         $host = $option['servername'];
         $dbname = $option['dbname'];
@@ -20,9 +21,7 @@ class DbMySql
         } catch (\PDOException $e) {
             echo "Connection failed: " . $e->getMessage();
         }
-    }
-    public function getDb()
-    {
+
         return $this->pdo;
     }
 }

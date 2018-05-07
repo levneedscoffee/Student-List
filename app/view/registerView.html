@@ -2,10 +2,16 @@
 {% block title %}Register{% endblock %}
 {% block content %}
 <div class="container">
-    {% if notify %}
+    <div class="row justify-content-center">
+    {% if userChangeEmail%}
         <div>
-            <h1>{{ notify }}</h1>
+            <h1>Вы изменили e-mail адрес, пожалуйста войдите под новым</h1>
         </div>
+    {% endif%}
+    {% if pleaseRegister %}
+    <div>
+        <h1>Чтобы редактировать свой профиль необходимо зарегестрироваться</h1>
+    </div>
     {% endif%}
     <div>
         {% if userName %}
@@ -14,11 +20,17 @@
             <p id ="regiId">Вы не зарегистрированы</p>
         {% endif%}
     </div>
-        <form action="register" method="post"  >
-            <input type="text" name="emailAuthorization" id="emailAuthorization">
-            <input type="submit" value="authorization" name="authorization">
-            <p id="errorText"></p>
+    </div>
+        <form action="register" method="post">
+            <div class="form-row  justify-content-center">
+                <input class="col-4 form-control" type="text" name="emailAuthorization" id="emailAuthorization">
+            </div>
+            <div class="form-row justify-content-center">
+                <input class ="col-4 btn btn-danger" type="submit" value="authorization" name="authorization">
+                <input id="xsrf" type="hidden" name="token" value="{{ token }}">
+            </div>
         </form>
+    <p id="errorText"></p>
 </div>
 <script type="text/javascript">
     $("document").ready(function(){
@@ -26,7 +38,7 @@
             $.ajax({
                 url: 'register',
                 type: 'POST',
-                data: {"emailAuthorization": $('#emailAuthorization').val()},
+                data: {"emailAuthorization": $('#emailAuthorization').val(), "token": $('#xsrf').val()},
                 dataType: 'json',
                 success: function(data){
                     process(data);

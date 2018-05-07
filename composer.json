@@ -1,5 +1,6 @@
 {
     "require": {
+        "pimple/pimple": "^3.0",
         "fzaninotto/faker": "^1.7",
         "twig/twig": "^2.4",
         "twbs/bootstrap": "4.1.0",
@@ -8,7 +9,10 @@
     "autoload": {
         "psr-4": {
             "StudentList\\Controllers\\": "app/controllers/",
-            "StudentList\\Models\\": "app/models/"
+            "StudentList\\Models\\": "app/models/",
+            "StudentList\\Services\\": "app/services",
+            "StudentList\\Validation\\": "app/validation",
+            "StudentList\\Entity\\": "app/entity"
         }
     }
 }
