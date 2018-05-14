@@ -32,6 +32,9 @@ __Edit__ - страница с редактированием данных по�
 + Apache/2.4.18 
 
 ## Скриншоты программы
+### Main
 ![alt-текст](screenshots/Main.png)
+### Edit
 ![alt-текст](screenshots/Edit.png)
+### Registration
 ![alt-текст](screenshots/Registration.png)
