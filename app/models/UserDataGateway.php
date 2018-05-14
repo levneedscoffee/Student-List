@@ -1,6 +1,7 @@
 <?php
 
 namespace StudentList\Models;
+use StudentList\Entity\User;
 
 class UserDataGateway
 {

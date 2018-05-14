@@ -15,7 +15,8 @@ class EditController extends Controller
     public function actionIndex()
     {
         $security = new Security();
-        $token = $security->createUniqueTokenXSRF();
+        $security->createUniqueTokenXSRF();
+        $token = $_COOKIE['token'];
 
         $pdoStudent = new StudentDataGateway(new DatabaseMySql());
 

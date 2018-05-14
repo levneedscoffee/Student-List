@@ -1,0 +1,21 @@
+.btn-primary{
+    margin: 0 2px ;
+}
+.searchBlock{
+    margin: 10px 0px;
+}
+.searchResult{
+    background-color: #e3f2fd;
+    width: 40%;
+    margin: -50px 0 10px 0;
+    padding: 10px 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+.thead{
+    background-color: white;
+}
+#wrap{
+    color: red;
+}

@@ -33,7 +33,7 @@ class MainController extends Controller
 
     private function pagination($pageNum, $search, $sort)
     {
-        $paginator = new Paginator(10);
+        $paginator = new Paginator();
         $values = $paginator->returnPageValues($pageNum, $search, $sort);
         $arr = $paginator->returnIterableArr($pageNum);
         $countPage = $paginator->returnCountPage();
@@ -59,7 +59,7 @@ class MainController extends Controller
     {
         foreach ($val["values"] as &$page) {
             foreach ($page as &$str) {
-              $str = preg_replace('/(' .$search.')/iu', '<b>$1</b>', $str);
+              $str = preg_replace('/(' .$search.')/iu', '<span id="wrap">$1</span>', $str);
             }
         }
         unset($page);

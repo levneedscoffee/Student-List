@@ -12,7 +12,7 @@ class Security
         }else{
             $cookie->setUniqueToken();
         }
-        return $_COOKIE['token'];
+
     }
     public function checkTokenXSRF(){
         if(isset($_COOKIE['token']) && isset($_POST['token']) && $_COOKIE['token'] === $_POST['token']){

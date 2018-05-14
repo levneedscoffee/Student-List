@@ -9,7 +9,7 @@ class Paginator
     private $colButton = 7;
     private $search = false;
 
-    public function __construct($limit=20)
+    public function __construct($limit=15)
     {
         $this->limit = $limit;
     }

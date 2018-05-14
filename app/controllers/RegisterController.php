@@ -14,23 +14,24 @@ class RegisterController extends Controller//такое себе
     public function actionIndex()
     {
         $security = new Security();
-        $token = $security->createUniqueTokenXSRF();
+        $security->createUniqueTokenXSRF();
+        $token = $_COOKIE['token'];
 
         $userName = $this->checkUserAuth();
 
         if(isset($_GET["notify"]) && $_GET["notify"] === "pleaseRegister" ){
-            $this->twigRender(self::CONTROLLER_VIEW, array("pleaseRegister"=>true));
+            $this->twigRender(self::CONTROLLER_VIEW, array("pleaseRegister"=>true,'token'=>$token));
             exit;
         }
         if(isset($_GET["notify"]) && $_GET["notify"] === "userChangeEmail"){
-            $this->twigRender(self::CONTROLLER_VIEW, array("userChangeEmail"=>true));
+            $this->twigRender(self::CONTROLLER_VIEW, array("userChangeEmail"=>true, 'token'=>$token));
             exit;
         }
 
         if($_SERVER["REQUEST_METHOD"] === "POST") {
 
             if (!$security->checkTokenXSRF()){
-                echo json_encode(array("error" => true, "text" => "Что-то пошло не так"));
+                print_r(array("error" => true, "text" => "Что-то пошло не так"));
                 exit;
             }
 
@@ -45,8 +46,7 @@ class RegisterController extends Controller//такое себе
              }
 
         }
-
-
+        
         $this->twigRender(self::CONTROLLER_VIEW, array("userName"=>$userName,'token'=>$token));
     }
 

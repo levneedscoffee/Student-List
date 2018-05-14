@@ -1,23 +1,26 @@
 {% extends 'templates/baseTemplate.html' %}
 
 {% block title %}Главная{% endblock %}
+{% block linkAndScript %}
+	<link rel="stylesheet" href="css/main.css">
+{% endblock %}
 {% block content %}
 <div class="container" xmlns="http://www.w3.org/1999/html">
-	<div class="row justify-content-right">
-		<form action="main" method="get">
-			<input type="search" class="col-8 form-control" id="inp" name="search">
-			<input class =" col btn btn-danger" type="submit" value="submit" id="sub">
+	<h1>Список абитуриентов</h1>
+	<form action="main" method="get">
+			<div class="row justify-content-end searchBlock">
+				<input class ="col-1 btn btn-primary"  type="submit" value="search" id="sub">
+				<input type="search" class="col-4 form-control " id="inp" name="search">
+			</div>
 		</form>
 		{% if search %}
-		<div>
-			<p>Вы ищите как "<span id="search">{{search}}</span>"</p>
+		<div class="searchResult">
+			<h4 id="searchText">Вы ищите как "<span id="search">{{search}}</span>"</h4>
 			<a href="/">[Вернуться на главную]</a>
 		</div>
 		{% endif %}
-	</div>
-
 	<table class="table table-sm ">
-		<thead class='thead-dark'>
+		<thead class='thead'>
 			<tr>
 				<th><a href="{{ getLink(pageNum,'name')}}">name</a></th>
 				<th><a href="{{ getLink(pageNum,'surname')}}">surname</a></th>

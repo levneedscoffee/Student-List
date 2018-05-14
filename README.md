@@ -30,3 +30,8 @@ __Edit__ - страница с редактированием данных по�
 + PHP >= 7.0 
 + MySQL 5.7.21
 + Apache/2.4.18 
+
+## Скриншоты программы
+![alt-текст](screenshots/Main.png)
+![alt-текст](screenshots/Edit.png)
+![alt-текст](screenshots/Registration.png)
